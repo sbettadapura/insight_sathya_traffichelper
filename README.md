@@ -93,12 +93,6 @@ export REDSHIFT_USER=<user>
 export REDSHIFT_PASSWD=<password>
 export REDSHIFT_DATABASE=<database>
 
-### Performance
-
-<p align="center">
-<img src="/images/performance.png" width="650"/>
-</p>
-
 ### Results of some Queries
 
 A number of queries can be run once user data has been processed. Here are a few examples:
@@ -114,3 +108,10 @@ A number of queries can be run once user data has been processed. Here are a few
 <p align="center">
 <img src="/images/conditions_on_66.png" width="650"/>
 </p>
+
+### Performance
+
+<p align="center">
+<img src="/images/performance.png" width="650"/>
+</p>
+
