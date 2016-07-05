@@ -94,6 +94,7 @@ export REDSHIFT_PASSWD=<password>
 export REDSHIFT_DATABASE=<database>
 
 ### Performance
+
 <p align="center">
 <img src="/images/performance.png" width="650"/>
 </p>
@@ -101,6 +102,7 @@ export REDSHIFT_DATABASE=<database>
 ### Results of some Queries
 
 A number of queries can be run once user data has been processed. Here are a few examples:
+
 <p align="center">
 <img src="/images/users.png" width="650"/>
 </p>
