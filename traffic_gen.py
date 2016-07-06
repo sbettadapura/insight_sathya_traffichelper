@@ -1,4 +1,10 @@
 #!/usr/bin/python
+"""
+	Generate traffic input. Generate user loation update, send it out on
+	Kafka topi "user_pos". Incident occurence and clearence are generated at
+	about 2% each compaed to user location update. These messages are sent
+	to Kafka topic "user_accident". Both are JSON messages.	
+"""
 from kafka import KafkaProducer, KeyedProducer
 from kafka.errors import KafkaError
 import datetime
@@ -6,7 +12,6 @@ from random import randrange
 import sys
 import time
 import json
-
 NUM_PARTITIONS = 18
 NUM_USERS = 100000
 NUM_ROUTES = 100
@@ -16,8 +21,6 @@ route_dict = dict()
 
 servers = ','.join([ip + ":9092" for ip in sys.argv[1:]])
 producer = KafkaProducer(bootstrap_servers = servers, value_serializer=lambda m: json.dumps(m).encode('ascii'))
-#producer = KeyedProducer(bootstrap_servers = servers, value_serializer=lambda m: json.dumps(m).encode('ascii'))
-#producer = KafkaProducer(value_serializer=lambda m: json.dumps(m).encode('ascii'))
 
 def gen_route_info():
 	rt_start = 0
@@ -67,27 +70,16 @@ def gen_user_traffic():
 		kafka_key, data = gen_update_pos()
 		return ("user_pos", data, kafka_key)
 
-#This class will handles any incoming request from
-#the browser 
 def trigger_gen():
 	topic, d, kafka_key = gen_user_traffic()
 	try:
 
 		#print topic, d, kafka_key
-		#future = producer.send(topic, d, key = kafka_key, partition = kafka_key)
-		#future = producer.send(topic, d, key = bytes(str(kafka_key)), partition = kafka_key)
 		future = producer.send(topic, d)
-		#future = producer.send(topic, d, partition = kafka_key)
-		#record_metadata = future.get(timeout=1000)
-		#print record_metadata.topic
-		#print record_metadata.partition
-		#print record_metadata.offset
 	except KafkaError:
 		print "Kafka error"
 		pass
 if __name__ == "__main__":
-	#rate = int(sys.argv[1])
 	gen_route_info()
 	while True:
 		trigger_gen()
-		#time.sleep(1.0/rate)

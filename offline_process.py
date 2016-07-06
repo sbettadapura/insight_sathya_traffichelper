@@ -1,5 +1,14 @@
 #!usr/bin/env python
-
+"""
+	Process data in Redis key "raw_input". User keep sending location updates
+	and occrence and clearence of incidents. We rocess this data by writing	a
+	State Machne. Note that as the input is strictly random, we can get
+	events out of order such as a clearence for an event that has not even
+	been recorded yet. We ignore such input.
+	We produce analytics for current queries and write them to Redis. We
+	alo write a summary of traffic data to AWS Redshift for historical
+	analysis.
+"""
 import redis
 import sys
 import os
@@ -21,7 +30,7 @@ USER = os.environ['REDSHIFT_USER']
 PASSWORD = os.environ['REDSHIFT_PASSWD']
 DATABASE = os.environ['REDSHIFT_DATABASE']
 
-def db_connection():
+def redshift_connection():
 	conn = psycopg2.connect(
 	host=HOST,
 	port=PORT,
@@ -34,7 +43,7 @@ def db_connection():
 
 def historical_stats_duration(accident_tod, accident_route_num, \
 			incident_location, accident_duration):
-	conn = db_connection()
+	conn = redshift_connection()
 	cursor = conn.cursor()
 	x = "users_total_on_route_%d" % accident_route_num
 	total_users = int(redis_conn.get(x))
